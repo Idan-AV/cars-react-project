@@ -1,0 +1,30 @@
+
+dl {
+    display: flex;
+    /* flex-wrap: wrap; */
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    overflow-wrap: break-word;
+    max-width: '10em';
+}
+dt {
+border-bottom: 1px solid #e6e6e6;
+font-weight: 700;
+padding: 9px 9px 9px 0;
+width: 50%;
+margin-inline-start: auto;
+/* margin: 0 */
+}
+
+dd {
+    border-bottom: 1px solid #e6e6e6;
+    padding: 9px 0;
+    width: 50%;
+    margin-inline-start: auto;
+}
+
+
+.image-gallery-play-button {
+    display: none !important;
+  }
