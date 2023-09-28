@@ -48,6 +48,8 @@ export default function LoginPage() {
       console.log(e)
       setNotification({open:true,msg:e.response.data.detail,severity:'error'})
     }
+    if(email===''||password===''){
+      setNotification({open:true,msg:'sorry please fill all the fields',severity:'error'})}
   };
 
   return (

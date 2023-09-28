@@ -59,11 +59,11 @@ export default function SignUpPage() {
     catch (e){
       console.log(e.response)
       
-      setNotification({open:true,msg:e.response.data.password.join(' '),severity:'error'})
+      setNotification({open:true,msg:JSON.stringify(e.response.data),severity:'error'})
 
     }
     if(email===''||password===''||phoneNumber===''||address===''){
-      setNotification({open:true,msg:'sorry please fill al the fields',severity:'error'})
+      setNotification({open:true,msg:'sorry please fill all the fields',severity:'error'})
 
 
     }

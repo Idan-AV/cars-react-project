@@ -7,7 +7,11 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import axios from 'axios';
 import { COMPANIES_NAMES_LIST } from '../infra/urls';
-const NewCar = ({carCondition,setCarCondition, 
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+const NewCar = ({price,setPrice, mainFile, setMainFile,
+  transmission, setTransmission,
+  description, setDescription,
+  carCondition,setCarCondition, 
   color, setColor,
           numberSeats, setNumberSeats,
           mileage, setMileage,
@@ -24,13 +28,19 @@ const NewCar = ({carCondition,setCarCondition,
       },
       []
       )
-      const handleFile1Select = (event) => {
+      const handleMainFileSelect = (event) => {
 
         if (event.target.files) {
-          setFile1(event.target.files[0])
+          setMainFile(event.target.files[0])
         }
       }
       const handleFile2Select = (event) => {
+
+        if (event.target.files) {
+          setFile2(event.target.files[0])
+        }
+      }
+      const handleFile1Select = (event) => {
 
         if (event.target.files) {
           setFile1(event.target.files[0])
@@ -104,26 +114,29 @@ const NewCar = ({carCondition,setCarCondition,
         <TextField  value={numberSeats}
       onChange={(e)=>{setNumberSeats(e.target.value)}} required variant='standard' label={'seats number'} sx={{maxWidth:'8em'}} type={'number'}/>
       </Stack>
-      {/* and here */}
       <Stack direction={'row'} marginTop={'2em'} gap={'1em'}>
-        <TextField  required variant='standard' label={'transmission'} sx={{maxWidth:'8em'}} type={'text'}/>
-        <TextField required variant='standard' multiline
+        <TextField  value={transmission}
+      onChange={(e)=>{setTransmission(e.target.value)}} required variant='standard' label={'transmission'} sx={{maxWidth:'8em'}} type={'text'}/>
+        <TextField value={description}
+      onChange={(e)=>{setDescription(e.target.value)}} required variant='standard' multiline
           maxRows={4} label={'description'} sx={{maxWidth:'8em'}} type={'number'}/>
       </Stack>
       {/* and add here a state */}
           <Stack marginTop={'3em'}>
             <p>your main picture here </p>
-          <TextField required sx={{width:'15em'}} variant="standard" type={'file'}/>
+          <input required={true} style={{width:'15em'}} onChange={handleMainFileSelect} type={'file'}/>
+          {/* <TextField  sx={{width:'15em'}}  onChange={handleMainFileSelect} variant="standard" type={'file'}/> */}
           </Stack>
 
 
       <Stack direction={'column'} marginTop={'2em'} gap={'1em'}>
         <p>Here you can upload pictures of your car:</p>
-        <TextField sx={{width:'15em'}} onChange={handleFile1Select} variant="standard" type={'file'}/>
+        <TextField sx={{width:'15em'}}  variant="standard" onChange={handleFile1Select} type={'file'}/>
         <TextField sx={{width:'15em'}} variant="standard" onChange={handleFile2Select} type={'file'}/>
       </Stack>
 {/* and here */}
-      <TextField sx={{marginTop:'3em'}} required type={'number'} label={'price'}/>
+      <TextField value={price}
+      onChange={(e)=>{setPrice(e.target.value)}} sx={{marginTop:'3em'}}  required type={'number'} label={'price'}/>
 
     </Stack>
   )

@@ -4,7 +4,7 @@ import './ProfilePage.css';
 import { useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton } from '@mui/material';
-export default function ProfilePageView({setEditMode}) {
+export default function ProfilePageView({setEditMode,phoneNumber,email}) {
   return (
     
     <section className="vh-100" style={{maxWidth:'50em',margin:'auto'}}>
@@ -17,8 +17,8 @@ export default function ProfilePageView({setEditMode}) {
                   style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem' }}>
                   <MDBCardImage src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
                     alt="Avatar" className="my-5" style={{ width: '80px' }} fluid />
-                  <MDBTypography tag="h5">Marie Horwitz</MDBTypography>
-                  <MDBCardText>Web Designer</MDBCardText>
+                  {/* <MDBTypography tag="h5">Marie Horwitz</MDBTypography> */}
+                  {/* <MDBCardText>Web Designer</MDBCardText> */}
                   <MDBIcon far icon="edit mb-5" />
                 </MDBCol>
                 <MDBCol md="8">
@@ -28,11 +28,11 @@ export default function ProfilePageView({setEditMode}) {
                     <MDBRow className="pt-1">
                       <MDBCol size="6" className="mb-3">
                         <MDBTypography tag="h4">Email</MDBTypography>
-                        <MDBCardText className="text-muted">info@example.com</MDBCardText>
+                        <MDBCardText className="text-muted">{`${email}`}</MDBCardText>
                       </MDBCol>
                       <MDBCol size="6" className="mb-3">
                         <MDBTypography tag="h4">Phone</MDBTypography>
-                        <MDBCardText className="text-muted">123 456 789</MDBCardText>
+                        <MDBCardText className="text-muted">{`${phoneNumber}`}</MDBCardText>
                       </MDBCol>
                     </MDBRow>
 

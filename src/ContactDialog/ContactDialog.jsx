@@ -17,8 +17,6 @@ import { useState } from 'react';
 //     })
 
 export default function ContactDialog({open,setOpen,car}) {
-  // change the user because it gives the current user's 
-  // details and not the real user
   const user = React.useContext(UserContext)
   const [carOwner, setCarOwner] = useState({
     owner: null})

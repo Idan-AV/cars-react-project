@@ -9,9 +9,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import NewCar from '../NewCar/NewCar';
 import { useState } from 'react';
 import axios from 'axios';
-import { ALL_COMPANIES_LIST } from '../infra/urls';
+import { ALL_CARS_LIST, ALL_COMPANIES_LIST, UPLOAD_EXTRA_CAR_PIC, UPLOAD_MAIN_CAR_PIC } from '../infra/urls';
+import { useContext } from 'react';
+import { UserContext } from '../context/userContext';
+import { FetchDataCarsContext } from '../CarsFunctionContext';
+import { SetNotificationContext } from '../NotificationContext/NotificationContext';
+import { Box, CircularProgress } from '@mui/material';
 
 export default function NewCarModal({open, setOpen}) {
+  const setNotification = useContext(SetNotificationContext)
+  const fetchData = useContext(FetchDataCarsContext)
   const [carCondition, setCarCondition] = useState('')
   const [pastOwners, setPastOwners] = useState(null)
   const [carModel, setCarModel] = useState(null)
@@ -23,15 +30,15 @@ export default function NewCarModal({open, setOpen}) {
   const [color , setColor] = useState('')
   const [mileage , setMileage] = useState(null)
   const[engineCapacity , setEngineCapacity] = useState(null)
-
-
-
-
-  const [companyId, setCompanyId] = useState(null)
+  const [transmission, setTransmission] = useState('')
+  const[description , setDescription] = useState('')
+  const [mainFile , setMainFile] = useState('')
+  const [price, setPrice] = useState(null)
   // try:
   const [file1 , setFile1] = useState('')
   const [file2 , setFile2] = useState('')
   const [file3 , setFile3] = useState('')
+  const user = useContext(UserContext)
 
 
   React.useEffect(() => {
@@ -48,32 +55,141 @@ export default function NewCarModal({open, setOpen}) {
 
 
   const handleClose = () => {
+    setCarCondition('')
+    setPastOwners(null)
+    setCarModel(null)
+     setYear(null)
+   setSelectedCopmany('')
+    setNumberSeats(null)
+     setColor('')
+    setMileage(null)
+    setEngineCapacity(null)
+    setTransmission('')
+    setDescription('')
+    setMainFile('')
+    setPrice(null)
+    setFile1('')
+    setFile2('')
     setOpen(false);
   };
 
   const handleCreate = async ()=>{
-    // to do this with my files 
-  //   const response = await axios.post(
-  //     UPLOAD_PROFILE_IMG_URL,
-  //     {file: file},
-  //     {headers: {
-  //         'Content-Type': 'multipart/form-data'
-  //     },
-  //     onUploadProgress: handleUploadProgress
-  //     }
-  // )
-    // console.log('selectedCompany:',selectedCopmany)
+    try{
+      
+    console.log('selectedCompany:',selectedCopmany)
 
-    // const selectedCompanyData =copmanies?.filter((company) => company.company_name === selectedCopmany)[0];
-    // copmanies?.find((company) => company.companyName === selectedCopmany);
-    // setCompanyId(selectedCompanyData?.id)
-    // console.log('id:',companyId)
-    // console.log('selectedCompanyData:',selectedCompanyData)
+    const selectedCompanyData =copmanies?.filter((company) => company.company_name === selectedCopmany)[0];
+    copmanies?.find((company) => company.companyName === selectedCopmany);
+    const companyId = selectedCompanyData?.id;
+    console.log('id:',companyId)
+    const response = await axios.post(ALL_CARS_LIST,{
+      'year_of_manufacture':year,
+      'model_name':carModel,
+      'number_of_past_owners':pastOwners,
+      'color':color,
+      'engine_capacity':engineCapacity,
+      'number_of_seats':numberSeats,
+      'car_condition':carCondition,
+      'mileage':mileage,
+      'transmission': transmission,
+      'price':price,
+      'company_id':companyId,
+      'description':description,
+      'user':user.user.id
+    })
 
+    console.log(response.data)
+    console.log('main file',mainFile)
+        if(mainFile==''){
+          // setNotification({open:true,
+          //   msg:'main file is a must field',severity:'error'}) 
+          alert('Please select a file.')
 
+        }
+    
+      else{
+        const responseMainFile = await axios.post(
+          `${UPLOAD_MAIN_CAR_PIC}${response.data.id}`,
+          {file: mainFile},
+          {headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+          })
+      }
+      if(file1!==''){
 
+      
+    const resposeFile1 = await axios.post(`${UPLOAD_EXTRA_CAR_PIC}${response.data.id}`,
+    {file: file1},
+    {headers: {
+        'Content-Type': 'multipart/form-data'
+    }
+    }
+    )
+    console.log('file 1',resposeFile1.data)}
+    if(file2!==''){
+    const resposeFile2 = await axios.post(`${UPLOAD_EXTRA_CAR_PIC}${response.data.id}`,
+    {file: file2},
+    {headers: {
+        'Content-Type': 'multipart/form-data'
+    }
+    }
+    )
+    console.log('file 2',resposeFile2.data)}
+    // const resposeFile3 = await axios.post(`${UPLOAD_EXTRA_CAR_PIC}${response.data.id}`,
+    // {file: file3},
+    // {headers: {
+    //     'Content-Type': 'multipart/form-data'
+    // }
+    // }
+    // )
+     setCarCondition('')
+  setPastOwners(null)
+  setCarModel(null)
+   setYear(null)
+ setSelectedCopmany('')
+  setNumberSeats(null)
+   setColor('')
+  setMileage(null)
+  setEngineCapacity(null)
+  setTransmission('')
+  setDescription('')
+  setMainFile('')
+  setPrice(null)
+  setFile1('')
+  setFile2('')
+  setOpen(false)
+  fetchData() 
+  setNotification({open:true,
+    msg:'the car has been created',severity:'success'}) 
 
+}
+
+  catch (e){
+    setNotification({open:true,
+      msg:JSON.stringify(e.response.data),severity:'error'}) 
   }
+}
+
+const isButtonDisabled = (
+  carCondition === '' ||
+  pastOwners === null ||
+  carModel === null ||
+  year === null ||
+  selectedCopmany === '' ||
+  numberSeats === null ||
+  color === '' ||
+  mileage === null ||
+  engineCapacity === null ||
+  transmission === '' ||
+  description === '' ||
+  mainFile === '' ||
+  price === null ||
+  mainFile == 'undefined'||
+  mainFile == null
+);
+
+
 
   return (
     <div>
@@ -81,6 +197,10 @@ export default function NewCarModal({open, setOpen}) {
         <DialogTitle>New Car</DialogTitle>
         <DialogContent>
           <NewCar
+          price={price} setPrice={setPrice}
+          mainFile={mainFile} setMainFile={setMainFile}
+          transmission={transmission} setTransmission={setTransmission}
+          description={description} setDescription={setDescription}
           color={color} setColor={setColor}
           numberSeats={numberSeats} setNumberSeats={setNumberSeats}
           mileage={mileage} setMileage={setMileage}
@@ -96,7 +216,7 @@ export default function NewCarModal({open, setOpen}) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleCreate}>Post a car</Button>
+          <Button onClick={handleCreate} disabled={isButtonDisabled}>Post a car</Button>
         </DialogActions>
       </Dialog>
     </div>

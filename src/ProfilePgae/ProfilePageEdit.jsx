@@ -5,19 +5,55 @@ import { useState } from 'react';
 import SaveIcon from '@mui/icons-material/Save';
 import { IconButton, Stack, TextField } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { useContext } from 'react';
+import { SetUserContext, UserContext } from '../context/userContext';
+import axios from 'axios';
+import { GET_USER_BY_ID } from '../infra/urls';
+import { SetNotificationContext } from '../NotificationContext/NotificationContext';
 
-const ProfilePageEdit = ({setEditMode,setEmail,email,phoneNumber,setPhoneNumber}) => {
-    const [tempPhone, setTempPhone] = useState(phoneNumber)
-    const [tempEmail, setTempEmail] = useState(email)
-
-
-    const handleSave = ()=>{
+const ProfilePageEdit = ({setEditMode,setEmail,email,user,setPhoneNumber}) => {
+    const user1 = useContext(UserContext)
+    const setNotification = useContext(SetNotificationContext)
+    const setUser = useContext(SetUserContext)
+    const [tempPhone, setTempPhone] = useState( user1.user?.profile.phone_number)
+    const [tempEmail, setTempEmail] = useState(user1.user?.email)
+    console.log(user1.user.id)
+    const handleSave = async ()=>{
+      try{
+      const changes = {
+        email:user1.user.email,
+        profile:{
+          phone_number:user1.user?.profile.phone_number
+        }
+      }
         setEmail(tempEmail)
         setPhoneNumber(tempPhone)
+        if(tempPhone!==user1.user?.profile.phone_number ){
+          changes.profile.phone_number = tempPhone
+        }
+        if(tempEmail!==user1.user?.email ){
+          changes.email = tempEmail
+        }
+
+        const respose = await axios.patch(`${GET_USER_BY_ID}${user1.user.id}`,changes)
+        console.log(respose.data)
+        const responseGet = await axios.get(`${GET_USER_BY_ID}${user1.user.id}`) 
+          setUser({
+        user: {...responseGet.data}
+    })
+    setNotification({open:true,
+      msg:'your changes has been saved',severity:'success'})
         setEditMode(false)
+      }
+      catch (e){
+        setNotification({open:true,
+          msg:e.respose.data,severity:'error'})
+
+      }
     }
     const handleCancel = ()=>{
       setEditMode(false)
+    
     }
 
 
